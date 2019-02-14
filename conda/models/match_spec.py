@@ -161,6 +161,9 @@ class MatchSpec(object):
         'license',
         'license_family',
         'fn',
+        'depends',
+        'constrains',
+        'combined_depends',
     )
     FIELD_NAMES_SET = frozenset(FIELD_NAMES)
     _MATCHER_CACHE = {}
@@ -949,6 +952,14 @@ class CaseInsensitiveStrMatch(GlobLowerStrMatch):
             return self._raw_value == _other_val
 
 
+class DependsMatch(GlobLowerStrMatch):
+    def match(self, other):
+        for d in other:
+            if GlobLowerStrMatch.match(self, d):
+                return True
+        return False
+
+
 _implementors = {
     'channel': ChannelMatch,
     'name': GlobLowerStrMatch,
@@ -959,4 +970,7 @@ _implementors = {
     'features': FeatureMatch,
     'license': CaseInsensitiveStrMatch,
     'license_family': CaseInsensitiveStrMatch,
+    'depends': DependsMatch,
+    'constrains': DependsMatch,
+    'combined_depends': DependsMatch,
 }
